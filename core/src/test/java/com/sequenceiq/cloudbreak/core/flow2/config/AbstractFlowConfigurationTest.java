@@ -62,7 +62,7 @@ public class AbstractFlowConfigurationTest {
         edgeConfig = new FlowConfiguration.FlowEdgeConfig(State.INIT, State.FINAL, State.FAILED, Event.FAIL_HANDLED);
         underTest.init();
         verify(applicationContext, times(8)).getBean(anyString(), any(Class.class));
-        flow = underTest.createFlow("flowId");
+        flow = underTest.createFlow("flowId", 0L);
         flow.initialize();
     }
 

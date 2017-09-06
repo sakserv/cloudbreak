@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.messaging.Message;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.ObjectStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationBuilder;
@@ -44,6 +45,7 @@ import com.sequenceiq.cloudbreak.core.flow2.FlowTriggerCondition;
 import com.sequenceiq.cloudbreak.core.flow2.MessageFactory;
 import com.sequenceiq.cloudbreak.core.flow2.RestartAction;
 import com.sequenceiq.cloudbreak.core.flow2.StateConverterAdapter;
+import com.sequenceiq.cloudbreak.eventlog.FlowEventLogHandler;
 
 public abstract class AbstractFlowConfiguration<S extends FlowState, E extends FlowEvent> implements FlowConfiguration<E> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFlowConfiguration.class);
@@ -76,9 +78,12 @@ public abstract class AbstractFlowConfiguration<S extends FlowState, E extends F
     }
 
     @Override
-    public Flow createFlow(String flowId) {
-        return new FlowAdapter<>(flowId, getStateMachineFactory().getStateMachine(), new MessageFactory<E>(), new StateConverterAdapter<>(stateType),
+    public Flow createFlow(String flowId, Long stackId) {
+        StateMachine sm = getStateMachineFactory().getStateMachine();
+        Flow flow = new FlowAdapter<>(flowId, sm, new MessageFactory<E>(), new StateConverterAdapter<>(stateType),
                 new EventConverterAdapter<>(eventType), getClass());
+        sm.addStateListener(applicationContext.getBean(FlowEventLogHandler.class, getClass().getSimpleName(), flow, stackId));
+        return flow;
     }
 
     @Override
