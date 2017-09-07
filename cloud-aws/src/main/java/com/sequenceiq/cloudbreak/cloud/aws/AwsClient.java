@@ -5,7 +5,6 @@ import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -98,7 +97,7 @@ public class AwsClient {
     }
 
     public boolean existingKeyPairNameSpecified(AuthenticatedContext auth) {
-        return StringUtils.isNoneEmpty(getExistingKeyPairName(auth));
+        return isNoneEmpty(getExistingKeyPairName(auth));
     }
 
     public String getExistingKeyPairName(AuthenticatedContext auth) {

@@ -9,28 +9,22 @@ import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.DescribeVolumesRequest;
 import com.amazonaws.services.ec2.model.DescribeVolumesResult;
 import com.sequenceiq.cloudbreak.cloud.context.AuthenticatedContext;
-import com.sequenceiq.cloudbreak.cloud.model.CloudStack;
 import com.sequenceiq.cloudbreak.cloud.task.PollBooleanStateTask;
 
 @Component(EbsVolumeStatusCheckerTask.NAME)
-@Scope(value = "prototype")
+@Scope("prototype")
 public class EbsVolumeStatusCheckerTask extends PollBooleanStateTask {
     public static final String NAME = "ebsVolumeStatusCheckerTask";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EbsVolumeStatusCheckerTask.class);
 
-    private AuthenticatedContext authenticatedContext;
+    private final String volumeId;
 
-    private CloudStack stack;
+    private final AmazonEC2Client amazonEC2Client;
 
-    private String volumeId;
-
-    private AmazonEC2Client amazonEC2Client;
-
-    public EbsVolumeStatusCheckerTask(AuthenticatedContext authenticatedContext, CloudStack stack, AmazonEC2Client amazonEC2Client, String volumeId) {
+    public EbsVolumeStatusCheckerTask(AuthenticatedContext authenticatedContext, AmazonEC2Client amazonEC2Client, String volumeId) {
         super(authenticatedContext, true);
         this.volumeId = volumeId;
-        this.stack = stack;
         this.amazonEC2Client = amazonEC2Client;
     }
 

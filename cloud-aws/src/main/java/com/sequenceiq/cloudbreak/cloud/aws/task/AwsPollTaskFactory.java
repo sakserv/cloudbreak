@@ -11,7 +11,6 @@ import com.amazonaws.services.autoscaling.AmazonAutoScalingClient;
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient;
 import com.amazonaws.services.cloudformation.model.StackStatus;
 import com.amazonaws.services.ec2.AmazonEC2Client;
-import com.amazonaws.services.ec2.model.CreateSnapshotResult;
 import com.sequenceiq.cloudbreak.cloud.aws.AwsClient;
 import com.sequenceiq.cloudbreak.cloud.aws.CloudFormationStackUtil;
 import com.sequenceiq.cloudbreak.cloud.context.AuthenticatedContext;
@@ -39,11 +38,6 @@ public class AwsPollTaskFactory {
     public PollTask<Boolean> newEbsVolumeStatusCheckerTask(AuthenticatedContext authenticatedContext, CloudStack stack,
             AmazonEC2Client amazonEC2Client, String volumeId) {
         return createPollTask(EbsVolumeStatusCheckerTask.NAME, authenticatedContext, stack, amazonEC2Client, volumeId);
-    }
-
-    public PollTask<Boolean> newCreateSnapshotReadyStatusCheckerTask(AuthenticatedContext authenticatedContext, CreateSnapshotResult snapshotResult,
-            String snapshotId, AmazonEC2Client ec2Client) {
-        return createPollTask(CreateSnapshotReadyStatusCheckerTask.NAME, authenticatedContext, snapshotResult, snapshotId, ec2Client);
     }
 
     public PollTask<Boolean> newASGroupStatusCheckerTask(AuthenticatedContext authenticatedContext, String asGroupName, Integer requiredInstances,
